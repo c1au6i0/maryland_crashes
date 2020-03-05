@@ -1,4 +1,3 @@
-
 library(tidyverse)
 library(janitor)
 library(ggridges)
@@ -10,13 +9,14 @@ library(htmlwidgets)
 library(plotly)
 library(shinydashboard)
 library(shinyWidgets)
+library(shiny)
 library(DT)
 
-
+# Get data ---
 all <- readRDS("c_dat.RDS")
-
 counties <- na.omit(unique(all$county_desc))
 
+# List for SelectInput ---
 other_var <- list(
                   "none",
                   "year", 
@@ -36,11 +36,11 @@ other_var <- list(
 
 hover_var <- names(all)[1:57]
 
+# Authenticate for mapbox ---
 map_token <- readRDS("map_token.RDS")
-
 Sys.setenv("MAPBOX_TOKEN" = map_token) # for Orca
 
-
+# Mapbox graph ---
 mapbox <- function(dat = dat, variab, hover, c_lon = -76, c_lat = 39) {
   
   if( variab == "none") {
@@ -60,7 +60,6 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -76, c_lat = 39) {
         lat = ~latitude,
         lon = ~longitude,
         mode = "markers",
-        # symbol =  ~dat[,var],
         color = dat[,variab],
         type = 'scattermapbox',
         hovertext = ~dat[,hover]) 
@@ -75,6 +74,20 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -76, c_lat = 39) {
   
   fig
 }
+
+# Ist Plot ----
+ist_plot <-  function(dat, variab){
+  variab <- sym(variab)
+  dat %>%
+    group_by(!!variab) %>%
+    summarise(n = n()) %>%
+    ggplot(aes(!!variab, n)) +
+    geom_col(fill = "grey", col = "black") +
+    theme_bw() +
+    labs(y = "number of crashes") +
+    geom_label(aes(!!variab, 1, label = n))
+   }
+
 
 
 # https://plot.ly/r/group-by/

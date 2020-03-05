@@ -1,10 +1,4 @@
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+# Claudio Zanettini
 
 source("other_f.R")
 
@@ -32,7 +26,7 @@ ui <- dashboardPage(
 
         selectInput(
             inputId = "imp_hov",
-            label = "Hover: Select a Variable",
+            label = "Hover and Histogram: Select a Variable",
             choices = hover_var,
             selected = "year"
         ),
@@ -49,7 +43,9 @@ ui <- dashboardPage(
        
     dashboardBody(
         plotlyOutput("map", height = "auto"),
+        plotOutput("ist"),
         DTOutput("brush",  width = "100%")
+        
         
     )
         
@@ -87,19 +83,19 @@ server <- function(input, output, session) {
       }
     )
     
-
+    # render plot ---
     output$map <- renderPlotly({
-        mapbox(dat = dat_fr(), hover = input$imp_hov, variab = input$imp_var)
+        p <- mapbox(dat = dat_fr(), hover = input$imp_hov, variab = input$imp_var)
     })
     
+    
+    # Reactives to show download button ---
     show_p <- reactiveVal(value = FALSE)
-    
     output$show_p <- reactive({show_p()})
-    
     outputOptions(output, "show_p", suspendWhenHidden = FALSE)
 
+    # get data selected with lasso in plotly ---
     selected_dat <- reactive({
-      
       d <- event_data("plotly_selected")
       
       if (!is.null(d)){
@@ -110,9 +106,13 @@ server <- function(input, output, session) {
         }
       })
     
-    output$brush <- renderDataTable(selected_dat(), selection = "none", server = T, editable = F,  options = list(scrollX = TRUE))
+    output$brush <- renderDataTable(selected_dat(), options = list(scrollX = TRUE))
     
-
+    output$ist <- renderPlot({
+        if(!is.null(input$imp_hov)) {
+          ist_plot(req(selected_dat()), variab = input$imp_hov)
+        }
+      })
     
     output$download <- downloadHandler(
       filename = function() {
