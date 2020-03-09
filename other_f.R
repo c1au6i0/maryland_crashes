@@ -12,11 +12,11 @@ library(shinyWidgets)
 library(shiny)
 library(DT)
 
-# Get data ---
+# Get data -----
 all <- readRDS("c_dat.RDS")
 counties <- na.omit(unique(all$county_desc))
 
-# List for SelectInput ---
+# List for SelectInput -----
 other_var <- list(
                   "none",
                   "year", 
@@ -36,12 +36,12 @@ other_var <- list(
 
 hover_var <- names(all)[1:57]
 
-# Authenticate for mapbox ---
+# Authenticate for mapbox -----
 map_token <- readRDS("map_token.RDS")
 Sys.setenv("MAPBOX_TOKEN" = map_token) # for Orca
 
-# Mapbox graph ---
-mapbox <- function(dat = dat, variab, hover, c_lon = -76, c_lat = 39) {
+# Mapbox graph -----
+mapbox <- function(dat = dat, variab, hover, c_lon = -72, c_lat = 40, c_zoom  = 5) {
   
   if( variab == "none") {
     fig <- 
@@ -69,7 +69,7 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -76, c_lat = 39) {
     layout(
       mapbox = list(
         style = 'open-street-map',
-        zoom = 5,
+        zoom = c_zoom,
         center = list(lon = c_lon, lat = c_lat)))
   
   fig
@@ -85,7 +85,8 @@ ist_plot <-  function(dat, variab){
     geom_col(fill = "grey", col = "black") +
     theme_bw() +
     labs(y = "number of crashes") +
-    geom_label(aes(!!variab, 1, label = n))
+    geom_label(aes(!!variab, 1, label = n)) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2))
    }
 
 

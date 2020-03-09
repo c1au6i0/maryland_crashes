@@ -30,6 +30,8 @@ ui <- dashboardPage(
             choices = hover_var,
             selected = "year"
         ),
+      
+      # actionButton("inf", label = "prova", style = "text-transform: lowercase; font-style: italic;"),
         
         conditionalPanel( condition = "output.show_p",
           downloadBttn("download",
@@ -46,7 +48,6 @@ ui <- dashboardPage(
         plotOutput("ist"),
         DTOutput("brush",  width = "100%")
         
-        
     )
         
 )
@@ -54,14 +55,38 @@ ui <- dashboardPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
+    # Reactive Data ----
     dat_fr <- reactiveVal()
-    
     dat_fr <- reactive({
-       
+      
       all %>%
-             filter(county_desc == input$imp_county)
+        filter(county_desc == input$imp_county)
         
     })
+    
+    # Default zoom. This is used when event_data("plotly_relayout") is null
+    
+    m_lay <- reactiveVal()
+    
+    m_center = list(lon = -76, lat = 39)
+    m_zoom = 5
+    
+    # Reactive map layout -----
+    m_lay <- reactive({
+              
+               m_lay <- event_data("plotly_relayout")
+               
+               input$imp_county
+               
+               # Default values
+               if (is.null(m_lay)){
+                 m_lay <- list(mapbox.center = list(lon = m_center$lon, lat = m_center$lat), mapbox.zoom = m_zoom)
+               }
+               
+               m_lay
+
+    })
+
     
     # license --------
     observeEvent(
@@ -83,18 +108,24 @@ server <- function(input, output, session) {
       }
     )
     
-    # render plot ---
+    # render Map -----
     output$map <- renderPlotly({
-        p <- mapbox(dat = dat_fr(), hover = input$imp_hov, variab = input$imp_var)
+        p <- mapbox(dat = dat_fr(),
+                    hover = input$imp_hov, 
+                    variab = input$imp_var,
+                    c_lon = isolate(m_lay()$mapbox.center$lon),
+                    c_lat = isolate(m_lay()$mapbox.center$lat),
+                    c_zoom = isolate(m_lay()$mapbox.zoom)
+                    )
     })
     
     
-    # Reactives to show download button ---
+    # Reactives to show download button -----
     show_p <- reactiveVal(value = FALSE)
     output$show_p <- reactive({show_p()})
     outputOptions(output, "show_p", suspendWhenHidden = FALSE)
 
-    # get data selected with lasso in plotly ---
+    # get data selected with lasso in plotly -----
     selected_dat <- reactive({
       d <- event_data("plotly_selected")
       
@@ -106,14 +137,21 @@ server <- function(input, output, session) {
         }
       })
     
+    # Reactive Lasso ------
     output$brush <- renderDataTable(selected_dat(), options = list(scrollX = TRUE))
     
+    
+    # Render Inst -----
     output$ist <- renderPlot({
         if(!is.null(input$imp_hov)) {
-          ist_plot(req(selected_dat()), variab = input$imp_hov)
+         inst <- ist_plot(req(selected_dat()), variab = input$imp_hov)
+         
+         inst
+         # ggplotly(inst)
         }
       })
     
+    # Download -----
     output$download <- downloadHandler(
       filename = function() {
         paste0("selection", ".xlsx")
@@ -122,6 +160,20 @@ server <- function(input, output, session) {
         writexl::write_xlsx(selected_dat(), file)
       }
     )
+    
+
+    
+    # observeEvent(input$inf,
+    #              handlerExpr = {
+    #                browser()
+    #                # zoom <- event_data("plotly_relayout")
+    #                
+    #                
+    #                
+    #              })
+    
+    
+    
 }
 
 # Run the application 
