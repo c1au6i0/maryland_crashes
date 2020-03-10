@@ -31,7 +31,7 @@ ui <- dashboardPage(
             selected = "year"
         ),
       
-      # actionButton("inf", label = "prova", style = "text-transform: lowercase; font-style: italic;"),
+      textOutput("inf"),
         
         conditionalPanel( condition = "output.show_p",
           downloadBttn("download",
@@ -67,23 +67,35 @@ server <- function(input, output, session) {
     # Default zoom. This is used when event_data("plotly_relayout") is null
     
     m_lay <- reactiveVal()
+    m_lay_last <- reactiveVal()
     
     m_center = list(lon = -76, lat = 39)
     m_zoom = 5
     
     # Reactive map layout -----
+    
     m_lay <- reactive({
-              
-               m_lay <- event_data("plotly_relayout")
+        
+      x <- event_data("plotly_relayout")  
+      
                
-               input$imp_county
-               
-               # Default values
-               if (is.null(m_lay)){
-                 m_lay <- list(mapbox.center = list(lon = m_center$lon, lat = m_center$lat), mapbox.zoom = m_zoom)
-               }
-               
-               m_lay
+      # Default values
+      if (is.null(x)){
+        m_lay <- list(mapbox.center = list(lon = m_center$lon, lat = m_center$lat), mapbox.zoom = m_zoom)
+      } 
+      
+      if(length(x) == 5){
+        m_lay <- event_data("plotly_relayout")
+      } 
+      
+      if(length(x) != 5 && !is.null(x)){
+        m_lay <- isolate(m_lay_last())
+      }
+
+      m_lay_last(m_lay)
+
+      m_lay
+      
 
     })
 
@@ -163,15 +175,8 @@ server <- function(input, output, session) {
     
 
     
-    # observeEvent(input$inf,
-    #              handlerExpr = {
-    #                browser()
-    #                # zoom <- event_data("plotly_relayout")
-    #                
-    #                
-    #                
-    #              })
-    
+    output$inf <- renderText({length(event_data("plotly_relayout"))})
+
     
     
 }
