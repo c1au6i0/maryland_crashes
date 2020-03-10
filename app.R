@@ -111,6 +111,7 @@ server <- function(input, output, session) {
           html = TRUE,
           text =
             HTML("
+             <a href=\"https://github.com/c1au6i0/maryland_crashes\"> code of the app is on my github </a> <br>
              Data provided by Maryland State Police <br>
              <a href=\"https://opendata.maryland.gov/Public-Safety/Maryland-Statewide-Vehicle-Crashes/65du-s3qu\"> link to data </a>"),
           width = "400px"
