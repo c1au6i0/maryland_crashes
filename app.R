@@ -30,8 +30,6 @@ ui <- dashboardPage(
             choices = hover_var,
             selected = "year"
         ),
-      
-      textOutput("inf"),
         
         conditionalPanel( condition = "output.show_p",
           downloadBttn("download",
@@ -172,12 +170,7 @@ server <- function(input, output, session) {
         writexl::write_xlsx(selected_dat(), file)
       }
     )
-    
-
-    
-    output$inf <- renderText({length(event_data("plotly_relayout"))})
-
-    
+     
     
 }
 
