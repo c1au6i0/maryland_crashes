@@ -17,7 +17,7 @@ It uses [Mapbox](https://www.mapbox.com/?utm_medium=sem&utm_source=google&utm_ca
 `Box Select` and `Lasso Select` allow to visualize data of geolocation subsets and to download `csv files`.
 
 
-![Image](/Users/heverz/Documents/R_projects/howard/video.gif)
+![Image](video.gif)
 
 
 

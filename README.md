@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-This a Shiny App developed to interactivelly visualize geocoordinates of
+This a Shiny App developed to interactively visualize geocoordinates of
 the [Maryland Crashes
 (2015-2019)](https://opendata.maryland.gov/Public-Safety/Maryland-Statewide-Vehicle-Crashes/65du-s3qu).
 
@@ -18,4 +18,4 @@ and [Plotly](https://plot.ly/) to create interactive maps.
 `Box Select` and `Lasso Select` allow to visualize data of geolocation
 subsets and to download `csv files`.
 
-![Image](/Users/heverz/Documents/R_projects/howard/video.gif)
+![Image](video.gif)
