@@ -30,6 +30,8 @@ ui <- dashboardPage(
             choices = hover_var,
             selected = "year"
         ),
+      
+   
         
         conditionalPanel( condition = "output.show_p",
           downloadBttn("download",
@@ -43,6 +45,7 @@ ui <- dashboardPage(
        
     dashboardBody(
         plotlyOutput("map", height = "auto"),
+        # tableOutput("inf"),
         plotOutput("ist"),
         DTOutput("brush",  width = "100%")
         
@@ -86,7 +89,7 @@ server <- function(input, output, session) {
         m_lay <- event_data("plotly_relayout")
       } 
       
-      if(length(x) != 5 && !is.null(x)){
+      if(length(x) != 5 && !is.null(x) && length(x) != 3){
         m_lay <- isolate(m_lay_last())
       }
 
@@ -172,6 +175,7 @@ server <- function(input, output, session) {
       }
     )
      
+    output$inf <- renderTable({m_lay()})
     
 }
 
