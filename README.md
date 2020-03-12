@@ -7,8 +7,9 @@
 
 <!-- badges: end -->
 
-This a Shiny App developed to interactively visualize geocoordinates of
-the [Maryland Crashes
+This a Shiny App, hosted [here](https://rden.shinyapps.io/howard/),
+developed to interactively visualize geocoordinates of the [Maryland
+Crashes
 (2015-2019)](https://opendata.maryland.gov/Public-Safety/Maryland-Statewide-Vehicle-Crashes/65du-s3qu).
 
 It uses
