@@ -45,9 +45,10 @@ ui <- dashboardPage(
        
     dashboardBody(
         plotlyOutput("map", height = "auto"),
-        # tableOutput("inf"),
         plotOutput("ist"),
-        DTOutput("brush",  width = "100%")
+        DTOutput("brush",  width = "100%"),
+        HTML('<br style="line-height:100;"><br>'),
+        tableOutput("inf")
         
     )
         

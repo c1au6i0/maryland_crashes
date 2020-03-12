@@ -5,6 +5,6 @@ account: rden
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1904651
-bundleId: 2866477
+bundleId: 2876407
 url: https://rden.shinyapps.io/howard/
-when: 1583811861.43249
+when: 1584052428.24907
