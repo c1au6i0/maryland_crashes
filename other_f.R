@@ -50,7 +50,7 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -72, c_lat = 40, c_zoom  = 
         lat = ~latitude,
         lon = ~longitude,
         mode = "markers",
-        color = I("grey20"),
+        color = I("grey50"),
         type = 'scattermapbox',
         hovertext = ~dat[,hover]) 
   } else {
