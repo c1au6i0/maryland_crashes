@@ -50,8 +50,8 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -72, c_lat = 40, c_zoom  = 
         lat = ~latitude,
         lon = ~longitude,
         mode = "markers",
-        # color = I("grey50"),
-        marker = list(symbol ='circle-stroked', size=5, color='black'),
+        color = I("grey50"),
+        # marker = list(symbol ='circle-stroked', size=5, color='black'),
         type = 'scattermapbox',
         hovertext = ~dat[,hover]) 
   } else {
@@ -70,7 +70,7 @@ mapbox <- function(dat = dat, variab, hover, c_lon = -72, c_lat = 40, c_zoom  = 
   fig <- fig %>%
     layout(
       mapbox = list(
-        # style = 'open-street-map',
+        style = 'open-street-map',
         zoom = c_zoom,
         center = list(lon = c_lon, lat = c_lat)))
   
